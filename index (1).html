@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INNOS Korea | 단일 페이지</title>
+  <meta name="description" content="의대 지망 고등학생을 위한 컨설팅, 학습 자료, 1:1 문의" />
+  <style>
+    :root{
+      --bg:#0b0c10; /* 다크 베이스 */
+      --panel:#101218; /* 섹션 패널 */
+      --text:#e6e8ed; /* 본문 */
+      --muted:#a7b0c0; /* 보조 텍스트 */
+      --brand:#6ad4ff; /* 포인트 */
+      --brand-2:#7c83ff; /* 보조 포인트 */
+      --border:#1c2230; /* 라인 */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius-lg: 28px;
+      --maxw: 1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 90% -10%, rgba(108,196,255,.12), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(124,131,255,.12), transparent 60%), var(--bg);
+      color:var(--text); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      line-height:1.6; letter-spacing:.2px;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+
+    /* 헤더 */
+    .header{position:sticky; top:0; z-index:1000; backdrop-filter:saturate(140%) blur(10px); background:rgba(11,12,16,.6); border-bottom:1px solid var(--border)}
+    .nav{max-width:var(--maxw); margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 20px}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px}
+    .brand .logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); box-shadow:0 6px 16px rgba(106,212,255,.35)}
+    .brand span{font-size:16px}
+
+    .menu{display:flex; gap:8px; align-items:center}
+    .menu a{padding:10px 14px; border-radius:999px; color:var(--muted); font-weight:600}
+    .menu a.active, .menu a:hover{color:#0b1220; background:linear-gradient(135deg,var(--brand),var(--brand-2))}
+
+    .hamburger{display:none; width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:#0e1118; align-items:center; justify-content:center}
+    .hamburger svg{width:22px; height:22px}
+
+    .mobile{display:none; flex-direction:column; gap:8px; padding:10px 14px; border-top:1px solid var(--border); background:#0e1219}
+    .mobile a{padding:12px 14px; border-radius:12px; color:var(--muted); border:1px solid transparent}
+    .mobile a:hover{border-color:var(--border); color:var(--text)}
+
+    /* 히어로 */
+    .hero{max-width:var(--maxw); margin:0 auto; padding:72px 20px 30px}
+    .hero-inner{display:grid; grid-template-columns:1.2fr .8fr; gap:28px; align-items:center}
+    .pill{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; border:1px solid var(--border); color:var(--muted); font-weight:700; background:rgba(16,18,24,.7)}
+    .h1{font-size:48px; line-height:1.15; margin:16px 0 14px; letter-spacing:.2px}
+    .h1 strong{background:linear-gradient(135deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .lede{font-size:18px; color:var(--muted)}
+    .cta{display:flex; gap:12px; margin-top:28px}
+    .btn{padding:14px 18px; border-radius:14px; font-weight:800; border:1px solid var(--border); background:#111726; color:var(--text); box-shadow:var(--shadow)}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:#0b1220}
+    .hero-card{background:linear-gradient(180deg, rgba(16,18,24,.8), rgba(16,18,24,.6)); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px}
+    .hero-card .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+    .stat{padding:16px; background:#0f1524; border:1px solid var(--border); border-radius:16px}
+    .stat .k{font-size:26px; font-weight:900}
+    .stat .t{color:var(--muted); font-size:13px}
+
+    /* 섹션 (소개/자료/문의) */
+    section{scroll-margin-top:90px}
+    .section{max-width:var(--maxw); margin:0 auto; padding:64px 20px}
+    .section h2{font-size:34px; margin:0 0 10px}
+    .section .sub{color:var(--muted); margin-bottom:24px}
+
+    .panel{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)}
+
+    /* 소개 그리드 */
+    .about-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
+    .about-card{padding:18px; border:1px solid var(--border); border-radius:16px; background:#0e1219}
+    .about-list{display:grid; gap:12px; margin-top:6px}
+    .check{display:flex; align-items:flex-start; gap:10px}
+    .check svg{flex:0 0 auto; width:18px; height:18px; margin-top:3px}
+    .muted{color:var(--muted)}
+
+    /* 자료 카드 & PDF 임베드 */
+    .resource-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+    .card{display:flex; flex-direction:column; gap:12px; padding:16px; border:1px solid var(--border); border-radius:16px; background:#0f1422}
+    .tag{display:inline-block; padding:6px 10px; font-size:12px; font-weight:800; color:#0b1220; border-radius:999px; background:linear-gradient(135deg,var(--brand),var(--brand-2))}
+    .pdf-wrap{position:relative; border:1px solid var(--border); border-radius:12px; overflow:hidden; aspect-ratio:4/3; background:#0c1018}
+    .pdf-wrap iframe,.pdf-wrap embed{width:100%; height:100%; border:0}
+    .pdf-actions{display:flex; gap:8px}
+    .ghost{padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:#0d1220; color:var(--text); font-weight:700}
+
+    /* 문의 */
+    .contact{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+    .contact .info{padding:18px; border:1px solid var(--border); border-radius:16px; background:#0f1422}
+    form{display:grid; gap:12px}
+    .inp{display:flex; flex-direction:column; gap:6px}
+    input, textarea, select{width:100%; padding:14px 12px; border-radius:12px; border:1px solid var(--border); background:#0c111b; color:var(--text); font:inherit}
+    textarea{min-height:140px; resize:vertical}
+
+    /* 구분선 & 푸터 */
+    .divider{max-width:var(--maxw); margin:24px auto; padding:0 20px}
+    hr{border:none; height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent)}
+    footer{max-width:var(--maxw); margin:0 auto; padding:30px 20px 60px; color:var(--muted); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+
+    /* 반응형 */
+    @media (max-width: 1024px){
+      .hero-inner, .about-grid, .contact{grid-template-columns:1fr}
+      .resource-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width: 640px){
+      .menu{display:none}
+      .hamburger{display:flex}
+      .resource-grid{grid-template-columns:1fr}
+      .h1{font-size:36px}
+    }
+  </style>
+</head>
+<body>
+  <!-- 헤더/네비게이션 -->
+  <header class="header" aria-label="사이트 상단 내비게이션">
+    <nav class="nav">
+      <a class="brand" href="#top" aria-label="홈으로">
+        <div class="logo" aria-hidden="true"></div>
+        <span>INNOS Korea</span>
+      </a>
+      <div class="menu" role="menubar">
+        <a href="#about" role="menuitem" class="active">소개</a>
+        <a href="#resources" role="menuitem">자료</a>
+        <a href="#contact" role="menuitem">문의</a>
+      </div>
+      <button class="hamburger" aria-label="모바일 메뉴 열기" id="hambtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </nav>
+    <div class="mobile" id="mobileMenu" hidden>
+      <a href="#about">소개</a>
+      <a href="#resources">자료</a>
+      <a href="#contact">문의</a>
+    </div>
+  </header>
+
+  <!-- 히어로 -->
+  <main id="top" class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="pill">의대 지망생 맞춤형 컨설팅 · 학습자료</span>
+        <h1 class="h1">의대 합격 전략과 <strong>연구형 포트폴리오</strong>를 한 곳에서</h1>
+        <p class="lede">대학 입시 후에도 한국 의대를 진학할 수 있는 방법은 분명히 존재합니다. 학생부 종합 전형에서 시작하여 일반 편입부터 의치전까지, 실제로 모든 전형들을 경험해본 멘토들이 코칭하는 의대 입시 A-Z를 책임지겠습니다.</p>
+        <div class="cta">
+          <a class="btn primary" href="#resources">자료 보러가기</a>
+          <a class="btn" href="#contact">컨설팅 문의</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="grid">
+          <div class="stat"><div class="k">98%</div><div class="t">상담 만족도</div></div>
+          <div class="stat"><div class="k">1:1</div><div class="t">맞춤 피드백</div></div>
+          <div class="stat"><div class="k">200+</div><div class="t">자료 페이지</div></div>
+          <div class="stat"><div class="k">24h</div><div class="t">평균 응답</div></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="divider" aria-hidden="true"><hr></div>
+
+  <!-- 소개 섹션 -->
+  <section id="about" class="section" aria-labelledby="about-title">
+    <h2 id="about-title">컨설팅 연구소 소개</h2>
+    <p class="sub">의대를 지망하는 학생들을 위한 전략 설계, 심화 탐구 멘토링, 서류·면접 코칭을 제공합니다.</p>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>차별점</h3>
+        <div class="about-list">
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <strong>개인별 로드맵</strong>
+              <div class="muted">내신·활동·목표 대학에 맞춘 합격 로드맵과 주차별 액션 플랜</div>
+            </div>
+          </div>
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <strong>연구·활동 설계</strong>
+              <div class="muted">교과 연계 심화 탐구, 보고서/포스터, 공모전 전략 멘토링</div>
+            </div>
+          </div>
+          <div class="check">
+            <svg viewBox="0 0 24 24  " fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <strong>서류·면접 코칭</strong>
+              <div class="muted">생기부·자소서 문장 다듬기, 면접 질문은행·모의면접</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>강점과 차별점</h3>
+        <ul class="muted">
+          <li>의학·생명과학 기반의 학문적 정확성</li>
+          <li>데이터 기반 피드백(루브릭, 체크리스트 제공)</li>
+          <li>실제 의학 전공자들의 전문성 있는 코칭</li>
+        </ul>
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
+          <a class="ghost" href="#resources">자료 미리보기</a>
+          <a class="ghost" href="#contact">상담 일정 잡기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><hr></div>
+
+  <!-- 자료 섹션 -->
+  <section id="resources" class="section" aria-labelledby="res-title">
+    <h2 id="res-title">자료</h2>
+    <p class="sub">경쟁력 있는 의대 입시를 위해 꼭 알아야할 정리본입니다.</p>
+    <div class="resource-grid">
+      <!-- 카드 1 -->
+      <article class="card" aria-label="자료 카드 1">
+        <span class="tag">생화학</span>
+        <h3>생화학 - 인체 내의 생화화적 대사</h3>
+        <p class="muted">지방·탄수화물·단백질 대사와 조절 메커니즘</p>
+        <div class="pdf-wrap">
+          <!-- PDF 임베드: 파일 경로 교체하세요 -->
+          <iframe title="PDF 미리보기 1" src="%E1%84%83%E1%85%A2%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AA%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%BC_%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%AF%E1%86%AB%E1%84%92%E1%85%AA-35-37.pdf#toolbar=0&navpanes=0&scrollbar=0"></iframe>
+        </div>
+        <div class="pdf-actions">
+          <a class="ghost" href="%E1%84%83%E1%85%A2%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AA%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%BC_%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%AF%E1%86%AB%E1%84%92%E1%85%AA-35-37.pdf" download>다운로드</a>
+          <a class="ghost" href="%E1%84%83%E1%85%A2%E1%84%89%E1%85%A1%E1%84%8B%E1%85%AA%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%8B%E1%85%A3%E1%86%BC_%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%AF%E1%86%AB%E1%84%92%E1%85%AA-35-37.pdf" target="_blank" rel="noopener">새 탭으로 열기</a>
+        </div>
+      </article>
+
+      <!-- 카드 2 -->
+      <article class="card" aria-label="자료 카드 2">
+        <span class="tag">생리학</span>
+        <h3>생리학 - 인체 기관계의 구조와 기능</h3>
+        <p class="muted">소화·순환·호흡 등 계통별 기능과 조절 원리</p>
+        <div class="pdf-wrap">
+          <embed title="PDF 미리보기 2" src="%E1%84%8B%E1%85%AD%E1%84%8B%E1%85%A3%E1%86%A8_%E1%84%89%E1%85%A2%E1%86%BC%E1%84%85%E1%85%B5_%E1%84%89%E1%85%A9%E1%84%92%E1%85%AA_%E1%84%8B%E1%85%B5%E1%84%83%E1%85%A9%E1%86%BC%E1%84%92%E1%85%A7%E1%86%AB_250825-1-3.pdf#toolbar=0&navpanes=0" type="application/pdf" />
+        </div>
+        <div class="pdf-actions">
+          <a class="ghost" href="%E1%84%8B%E1%85%AD%E1%84%8B%E1%85%A3%E1%86%A8_%E1%84%89%E1%85%A2%E1%86%BC%E1%84%85%E1%85%B5_%E1%84%89%E1%85%A9%E1%84%92%E1%85%AA_%E1%84%8B%E1%85%B5%E1%84%83%E1%85%A9%E1%86%BC%E1%84%92%E1%85%A7%E1%86%AB_250825-1-3.pdf" download>다운로드</a>
+          <a class="ghost" href="%E1%84%8B%E1%85%AD%E1%84%8B%E1%85%A3%E1%86%A8_%E1%84%89%E1%85%A2%E1%86%BC%E1%84%85%E1%85%B5_%E1%84%89%E1%85%A9%E1%84%92%E1%85%AA_%E1%84%8B%E1%85%B5%E1%84%83%E1%85%A9%E1%86%BC%E1%84%92%E1%85%A7%E1%86%AB_250825-1-3.pdf" target="_blank" rel="noopener">새 탭으로 열기</a>
+        </div>
+      </article>
+
+      <!-- 카드 3 -->
+      <article class="card" aria-label="자료 카드 3">
+        <span class="tag">신경과학</span>
+        <h3>신경과학 - 신경계의 구조, 기능, 질병</h3>
+        <p class="muted">신경계 신호전달·감각경로·질환 개요</p>
+        <div class="pdf-wrap">
+          <iframe title="PDF 미리보기 3" src="%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%89%E1%85%B5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC_%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%AF%E1%86%AB%E1%84%92%E1%85%AA%20%281%29-2-4.pdf#toolbar=0&view=FitH"></iframe>
+        </div>
+        <div class="pdf-actions">
+          <a class="ghost" href="%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%89%E1%85%B5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC_%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%AF%E1%86%AB%E1%84%92%E1%85%AA%20%281%29-2-4.pdf" download>다운로드</a>
+          <a class="ghost" href="%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC%E1%84%8B%E1%85%AD%E1%86%BC%E1%84%89%E1%85%B5%E1%86%AB%E1%84%80%E1%85%A7%E1%86%BC_%E1%84%83%E1%85%A1%E1%86%AB%E1%84%80%E1%85%AF%E1%86%AB%E1%84%92%E1%85%AA%20%281%29-2-4.pdf" target="_blank" rel="noopener">새 탭으로 열기</a>
+        </div>
+      </article>
+    </div>
+
+    <!-- 필요 시 더 많은 카드 복제해서 사용하세요 -->
+  </section>
+
+  <div class="divider" aria-hidden="true"><hr></div>
+
+  <!-- 문의 섹션 -->
+  <section id="contact" class="section" aria-labelledby="contact-title">
+    <h2 id="contact-title">문의</h2>
+    <p class="sub">컨설팅/자료 관련 문의를 남겨주세요. 제출 시 알림 메일을 설정하려면 아래 폼 액션을 변경하세요.</p>
+    <div class="contact">
+      <div class="info">
+        <h3>연락처 & 운영정보</h3>
+        <ul class="muted">
+          <li>이메일: innoskoreaedu@gmail.com</li>
+          <li>상담 가능: 월–금 10:00–18:00 (KST)</li>
+          <li>응답: 영업일 기준 24시간 이내</li>
+        </ul>
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+          <a class="ghost" href="#resources">자료 보기</a>
+          <a class="ghost" href="#about">소개 다시보기</a>
+        </div>
+      </div>
+      <div class="panel">
+        <!-- 참고: 실제 전송을 위해 formspree나 자신의 백엔드 엔드포인트로 action 교체 -->
+        <form id="contactForm" action="mailto:innoskoreaedu@gmail.com" method="POST" novalidate>
+          <div class="inp">
+            <label for="name">이름</label>
+            <input id="name" name="name" placeholder="홍길동" required />
+          </div>
+          <div class="inp">
+            <label for="email">이메일</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="inp">
+            <label for="type">문의 유형</label>
+            <select id="type" name="type">
+              <option>1:1 컨설팅</option>
+              <option>자료 구매</option>
+              <option>기타 문의</option>
+            </select>
+          </div>
+          <div class="inp">
+            <label for="msg">메시지</label>
+            <textarea id="msg" name="message" placeholder="필요한 내용과 가능 일정 등을 적어주세요" required></textarea>
+          </div>
+          <button class="btn primary" type="submit">문의 보내기</button>
+          <p id="formNote" class="muted" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© <span id="year"></span> INNOS Korea · All rights reserved.</div>
+    <div class="muted">사업자 정보/이용약관/개인정보처리방침 링크 영역</div>
+  </footer>
+
+  <script>
+    // 연도
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 모바일 메뉴
+    const hambtn = document.getElementById('hambtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hambtn?.addEventListener('click', () => {
+      const isHidden = mobileMenu.hasAttribute('hidden');
+      if (isHidden) mobileMenu.removeAttribute('hidden');
+      else mobileMenu.setAttribute('hidden','');
+    });
+    mobileMenu?.addEventListener('click', e => {
+      if(e.target.matches('a')) mobileMenu.setAttribute('hidden','');
+    });
+
+    // 스무스 스크롤 & 활성 링크 표시
+    const links = Array.from(document.querySelectorAll('.menu a, .mobile a'));
+    links.forEach(a => a.addEventListener('click', evt => {
+      if (a.hash) {
+        const el = document.querySelector(a.hash);
+        if (el) {
+          evt.preventDefault();
+          el.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      }
+    }));
+
+    const sections = ['#about','#resources','#contact'].map(s=>document.querySelector(s));
+    const navLinks = Array.from(document.querySelectorAll('.menu a'));
+    const ob = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const id = '#' + entry.target.id;
+          navLinks.forEach(n=>n.classList.toggle('active', n.getAttribute('href')===id));
+        }
+      })
+    }, {rootMargin:'-55% 0px -40% 0px', threshold:0});
+    sections.forEach(s=> s && ob.observe(s));
+
+    // 폼 UX (프론트 유효성 검사 & 안내)
+    const form = document.getElementById('contactForm');
+    const note = document.getElementById('formNote');
+    
+form?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(form);
+  const name = (fd.get('name')||'').toString();
+  const email = (fd.get('email')||'').toString();
+  const typ = (fd.get('type')||'').toString();
+  const message = (fd.get('message')||'').toString();
+
+  if(form.action.startsWith('mailto:')){
+    const to = form.action.replace('mailto:','').trim();
+    const subject = encodeURIComponent(`[INNOS Korea 문의] ${name} (${typ})`);
+    const body = encodeURIComponent(
+      `이름: ${name}
+이메일: ${email}
+유형: ${typ}
+
+메시지:
+${message}`
+    );
+    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    note.textContent = '메일 작성 창이 열리면 전송을 완료해주세요.';
+    form.reset();
+    return;
+  }
+
+  note.textContent = '전송 중입니다…';
+  try{
+    const res = await fetch(form.action, {method:'POST', body: fd, headers:{'Accept':'application/json'}});
+    if(res.ok){
+      form.reset();
+      note.textContent = '성공적으로 접수되었습니다. 영업일 기준 24시간 이내 회신드릴게요!';
+    } else {
+      note.textContent = '전송에 실패했습니다. 이메일(innoskoreaedu@gmail.com)로 직접 문의해주세요.';
+    }
+  }catch(err){
+    note.textContent = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+  }
+});
+if(res.ok){
+          form.reset();
+          note.textContent = '성공적으로 접수되었습니다. 영업일 기준 24시간 이내 회신드릴게요!';
+        } else {
+          note.textContent = '전송에 실패했습니다. 이메일(innoskoreaedu@gmail.com)로 직접 문의해주세요.';
+        }
+      }catch(err){
+        note.textContent = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      }
+    });
+  </script>
+</body>
+</html>
+
